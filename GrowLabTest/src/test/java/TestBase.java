@@ -29,32 +29,24 @@ public class TestBase {
     }
 
 
-    public void enterManagerEmail(){
+    public void enterEmail(String emailEntered){
         sleepMethod();
         WebElement email = driver.findElement(By.cssSelector("#sw-form-capture-email-input"));
         email.click();
-        email.sendKeys("billye@example.com");
+        email.clear();
+        email.sendKeys(emailEntered);
         sleepMethod();
 
     }
-    public void enterCorrectPassword(){
+    public void enterPassword(String passwordEntered){
         sleepMethod();
         WebElement password = driver.findElement(By.cssSelector("#sw-form-password-input"));
         password.click();
-        password.sendKeys("123456");
-        sleepMethod();
-    }
-    public void enterWrongPassword(){
-        //enter wrong password
-        sleepMethod();
-        WebElement password = driver.findElement(By.cssSelector("#sw-form-password-input"));
-        password.click();
-        password.sendKeys("abcd");
-        WebElement button = driver.findElement(By.cssSelector("#sw-sign-in-submit-btn"));
-        button.click();
-        sleepMethod();
         password.clear();
+        password.sendKeys(passwordEntered);
+        sleepMethod();
     }
+
     public void submitButtonClick(){
         //click submit button
         sleepMethod();
@@ -70,32 +62,34 @@ public class TestBase {
         Assert.assertEquals(text.contains("Invalid email or password"),Boolean.TRUE);
 
     }
-    public void checkStartPage(){
-        //checking the transition to the start page
-        sleepMethod();
-        String text = driver.getPageSource();
-        System.out.println(text.contains("Clients"));
-        Assert.assertEquals(text.contains("Clients"),Boolean.TRUE);
 
-    }
-    public void managerAuth(){
+    public void auth(String emailEntered, String passwordEntered){
         sleepMethod();
-        enterManagerEmail();
-        enterCorrectPassword();
+        enterEmail(emailEntered);
+        enterPassword(passwordEntered);
         submitButtonClick();
         sleepMethod();
-        checkStartPage();
+        checkClientsLink();
         sleepMethod();
     }
+    public void managerAuth() {
+        auth("billye@example.com","123456");
+    }
+    public void clientAuth(){
+        auth("lucie@example.com", "123456");
+    }
+    public void consultantAuth(){
+        auth("edra@example.com", "123456");
+    }
+
     public void checkClientsLink(){
-        //
         sleepMethod();
-        WebElement clients = driver.findElement(By.cssSelector("#home-header1 > div > div.desktop-menu.text-center.justify-content-end > ul > li:nth-child(2) > a"));
+        WebElement clients = driver.findElement(By.cssSelector("#cta7 > div > div > div.col-md-7.col-12.text-center.text-md-left > h2"));
         clients.click();
         sleepMethod();
         String text = driver.getPageSource();
-        System.out.println(text.contains("Our Clients"));
-        Assert.assertEquals(text.contains("Our Clients"),Boolean.TRUE);
+        System.out.println(text.contains("Welcome to your Client Portal"));
+        Assert.assertEquals(text.contains("Welcome to your Client Portal"),Boolean.TRUE);
     }
 
     public void sleepMethod(){
@@ -106,9 +100,18 @@ public class TestBase {
             System.out.println("InterruptedException");
         }
     }
+    public void logout(){
+        // log out of the manager account if we are currently
+        driver.findElement(By.id("navbarDropdown")).click();
+        driver.findElement(By.cssSelector(".d-item.d-flex.justify-content-start.align-items-center.navigate")).click();
+    }
+    public void openLoginPage(){
+        driver.get("https://derrick686.softr.app/login");
+    }
+
 
     @AfterMethod
-    public void afterTest() {
+    public void exit() {
         driver.close();
     }
 }
