@@ -2,32 +2,24 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 public class TestBase {
+    final static Logger logger = LoggerFactory.getLogger(TestBase.class);
     WebDriver driver ;
 
-    @BeforeMethod
+    @BeforeTest
     public void prepare() {
         driver = new ChromeDriver();
         driver.get("https://derrick686.softr.app/login");
-        //driver.manage().window().maximize();
+        driver.manage().window().maximize();
+        logger.info("Running a test: prepare");
+        logger.info("Precondition for each test: opening login page in browser");
     }
-
-    public void enterBadEmail(){
-        sleepMethod();
-        WebElement input = driver.findElement(By.cssSelector("#sw-form-capture-email-input"));
-        input.click();
-        input.sendKeys("edraexample.com");
-        sleepMethod();
-        WebElement button = driver.findElement(By.cssSelector("#sw-sign-in-submit-btn"));
-        button.click();
-        sleepMethod();
-        input.clear();
-    }
-
 
     public void enterEmail(String emailEntered){
         sleepMethod();
@@ -87,9 +79,8 @@ public class TestBase {
         WebElement clients = driver.findElement(By.cssSelector("#cta7 > div > div > div.col-md-7.col-12.text-center.text-md-left > h2"));
         clients.click();
         sleepMethod();
-        String text = driver.getPageSource();
-        System.out.println(text.contains("Welcome to your Client Portal"));
-        Assert.assertEquals(text.contains("Welcome to your Client Portal"),Boolean.TRUE);
+        //Assert.assertTrue(searchInPageSource("Welcome to your Client Portal"));
+        Assert.assertEquals(searchInPageSource("Welcome to your Client Portal"),Boolean.TRUE);
     }
 
     public void sleepMethod(){
@@ -108,11 +99,18 @@ public class TestBase {
     public void openLoginPage(){
         driver.get("https://derrick686.softr.app/login");
     }
+    public boolean searchInPageSource(String text){
+        return driver.getPageSource().contains(text);
 
+    }
+    public void searchByLinkText(String text){
+        driver.findElement(By.partialLinkText(text));
+    }
 
-    @AfterMethod
+    @AfterTest
     public void exit() {
-        driver.close();
+        logger.info("Leaving the site. Browser is closing.");
+        driver.quit();
     }
 }
 

@@ -68,9 +68,10 @@ public class TestGrowLab extends TestBase {
         WebElement input = driver.findElement(By.cssSelector("#list2 > div:nth-child(1) > div > div > div > input"));
         input.sendKeys("april");
         sleepMethod();
-        String text = driver.getPageSource();
-        System.out.println(text.contains("No results found, try adjusting your search and filters."));
-        Assert.assertEquals(text.contains("No results found, try adjusting your search and filters."),Boolean.TRUE);
+        Assert.assertTrue(searchInPageSource("No results found, try adjusting your search and filters."));
+        //String text = driver.getPageSource();
+        //System.out.println(text.contains("No results found, try adjusting your search and filters."));
+        //Assert.assertEquals(text.contains("No results found, try adjusting your search and filters."),Boolean.TRUE);
     }
     //3. Проверка поиска клиентов по названию компании, в которой работает один клиент
     @Test
@@ -85,6 +86,7 @@ public class TestGrowLab extends TestBase {
         WebElement input = driver.findElement(By.cssSelector("#list2 > div:nth-child(1) > div > div > div > input"));
         input.sendKeys("Worman");
         sleepMethod();
+
         int clientsFound = driver.findElements(By.cssSelector("#list2 > div:nth-child(2) > div > div > div.sw-js-list-container.sw-3-column > div:nth-child(1) > div > div.text.d-flex.flex-column > div > div:nth-child(2)")).size();
         Assert.assertEquals(clientsFound, 1);
     }
