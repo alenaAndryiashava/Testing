@@ -12,6 +12,9 @@ public class AuthenticationTest extends TestBase{
     public void beforeMOpenLoginPage(){
         logger.info("Precondition for each test: user is not logged in, login page is opened in browser");
         openLoginPage();
+        //title[@lang=”en”]
+        //element[@attribute=“value”]
+        //h3[@data-id=“.....”]
     }
     @Test
     public void LoginAsManagerTest(){
@@ -19,18 +22,10 @@ public class AuthenticationTest extends TestBase{
         logger.info("Authenticate as manager");
         managerAuth();
         sleepMethod();
-        /*List<WebElement> navItems = driver.findElements(By.className("nav-item"));
+        List<WebElement> navItems = driver.findElements(By.className("nav-item"));
         List<WebElement> dropDowns = driver.findElements(By.className("dropdown"));
         navItems.removeAll(dropDowns);
         Assert.assertEquals(navItems.size(), 4);
-
-         */
-
-
-        //title[@lang=”en”]
-        //element[@attribute=“value”]
-        //h3[@data-id=“.....”]
-
         logger.info("Verify that links to portal sections are presented on the page available to manager");
 
         driver.findElement(By.partialLinkText("PROJECT OVERVIEW"));
@@ -42,7 +37,37 @@ public class AuthenticationTest extends TestBase{
         Assert.assertTrue(searchInPageSource("CLIENTS"));
         Assert.assertTrue(searchInPageSource("TEAM"));
         Assert.assertTrue(searchInPageSource("INVOICES"));
+        logger.info("Test passed");
     }
+    @Test(dataProvider = "getPartialLinkText")
+    public void LoginAsManagerDataProviderTest(String text){
+        logger.info("Starting method: LoginAsManagerTest");
+        logger.info("Authenticate as manager");
+        managerAuth();
+        sleepMethod();
+        driver.findElement(By.partialLinkText(text));
+        sleepMethod();
+        Assert.assertTrue(searchInPageSource(text));
+        logger.info("Test passed");
+    }
+    @Test(dataProvider = "getManagerDataAuthFromCSV")
+    public void LoginAsManagerFromCSVTest(String email,String password,String project, String clients, String team, String invoices){
+        logger.info("Starting method: LoginAsManagerTest");
+        logger.info("Authenticate as manager");
+        goodAuth(email,password);
+        sleepMethod();
+        driver.findElement(By.partialLinkText(project));
+        driver.findElement(By.partialLinkText(clients));
+        driver.findElement(By.partialLinkText(team));
+        driver.findElement(By.partialLinkText(invoices));
+        sleepMethod();
+        Assert.assertTrue(searchInPageSource(project));
+        Assert.assertTrue(searchInPageSource(clients));
+        Assert.assertTrue(searchInPageSource(team));
+        Assert.assertTrue(searchInPageSource(invoices));
+        logger.info("Test passed");
+    }
+
 
     @Test
     public void LoginAsClientTest(){
@@ -91,8 +116,5 @@ public class AuthenticationTest extends TestBase{
     public void afterMLogout(){
         logger.info("Ending test");
         logout();
-
     }
-
-
 }

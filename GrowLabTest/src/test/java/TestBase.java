@@ -1,4 +1,5 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -7,8 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 
-public class TestBase {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class TestBase extends DataProviders{
     final static Logger logger = LoggerFactory.getLogger(TestBase.class);
     WebDriver driver ;
 
@@ -19,6 +25,24 @@ public class TestBase {
         driver.manage().window().maximize();
         logger.info("Running a test: prepare");
         logger.info("Precondition for each test: opening login page in browser");
+    }
+    @DataProvider
+    public Iterator<Object[]> getWrongLoginData(){
+        List<Object[]> list = new ArrayList<>();
+        list.add(new Object[]{"email","password"});
+        list.add(new Object[]{"billyeexample.com","123456"});
+        list.add(new Object[]{"","123456"});
+        list.add(new Object[]{"billye@example.com",""});
+        return list.iterator();
+    }
+    @DataProvider
+    public Iterator<Object[]> getPartialLinkText(){
+        List<Object[]> list = new ArrayList<>();
+        list.add(new Object[]{"PROJECT OVERVIEW"});
+        list.add(new Object[]{"CLIENTS"});
+        list.add(new Object[]{"TEAM"});
+        list.add(new Object[]{"INVOICES"});
+        return list.iterator();
     }
 
     public void enterEmail(String emailEntered){
@@ -54,32 +78,39 @@ public class TestBase {
         Assert.assertEquals(text.contains("Invalid email or password"),Boolean.TRUE);
 
     }
-
-    public void auth(String emailEntered, String passwordEntered){
+    public void badAuth(String email, String password){
         sleepMethod();
-        enterEmail(emailEntered);
-        enterPassword(passwordEntered);
+        enterEmail(email);
+        enterPassword(password);
         submitButtonClick();
         sleepMethod();
-        checkClientsLink();
+        checkErrorMessage();
+        sleepMethod();
+    }
+
+    public void goodAuth(String email, String password){
+        sleepMethod();
+        enterEmail(email);
+        enterPassword(password);
+        submitButtonClick();
+        sleepMethod();
+        checkStartPage();
+        logout();
+        openLoginPage();
         sleepMethod();
     }
     public void managerAuth() {
-        auth("billye@example.com","123456");
+        goodAuth("billye@example.com","123456");
     }
     public void clientAuth(){
-        auth("lucie@example.com", "123456");
+        goodAuth("lucie@example.com", "123456");
     }
     public void consultantAuth(){
-        auth("edra@example.com", "123456");
+        goodAuth("edra@example.com", "123456");
     }
 
-    public void checkClientsLink(){
+    public void checkStartPage(){
         sleepMethod();
-        WebElement clients = driver.findElement(By.cssSelector("#cta7 > div > div > div.col-md-7.col-12.text-center.text-md-left > h2"));
-        clients.click();
-        sleepMethod();
-        //Assert.assertTrue(searchInPageSource("Welcome to your Client Portal"));
         Assert.assertEquals(searchInPageSource("Welcome to your Client Portal"),Boolean.TRUE);
     }
 
@@ -106,6 +137,21 @@ public class TestBase {
     public void searchByLinkText(String text){
         driver.findElement(By.partialLinkText(text));
     }
+    public void searchByCssSelector(String text,String word){
+        sleepMethod();
+        WebElement webElement =  driver.findElement(By.cssSelector(text));
+        webElement.sendKeys(word);
+        sleepMethod();
+    }
+    public void searchClientsBy(String stringS) {
+        WebElement input = driver.findElement(By.xpath("//*[@id=\"list2\"]/div[1]/div/div/div/input"));
+        input.click();
+        input.clear();
+        input.sendKeys(stringS);
+        input.sendKeys(Keys.ENTER);
+        sleepMethod();
+    }
+
 
     @AfterTest
     public void exit() {
