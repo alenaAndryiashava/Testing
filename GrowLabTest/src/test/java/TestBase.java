@@ -87,6 +87,14 @@ public class TestBase extends DataProviders{
         checkErrorMessage();
         sleepMethod();
     }
+    public void auth(String email, String password){
+        sleepMethod();
+        enterEmail(email);
+        enterPassword(password);
+        submitButtonClick();
+        sleepMethod();
+
+    }
 
     public void goodAuth(String email, String password){
         sleepMethod();
@@ -100,13 +108,13 @@ public class TestBase extends DataProviders{
         sleepMethod();
     }
     public void managerAuth() {
-        goodAuth("billye@example.com","123456");
+        auth("billye@example.com","123456");
     }
     public void clientAuth(){
-        goodAuth("lucie@example.com", "123456");
+        auth("lucie@example.com", "123456");
     }
     public void consultantAuth(){
-        goodAuth("edra@example.com", "123456");
+        auth("edra@example.com", "123456");
     }
 
     public void checkStartPage(){

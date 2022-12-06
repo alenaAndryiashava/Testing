@@ -54,7 +54,7 @@ public class AuthenticationTest extends TestBase{
     public void LoginAsManagerFromCSVTest(String email,String password,String project, String clients, String team, String invoices){
         logger.info("Starting method: LoginAsManagerTest");
         logger.info("Authenticate as manager");
-        goodAuth(email,password);
+        auth(email,password);
         sleepMethod();
         driver.findElement(By.partialLinkText(project));
         driver.findElement(By.partialLinkText(clients));
@@ -66,6 +66,7 @@ public class AuthenticationTest extends TestBase{
         Assert.assertTrue(searchInPageSource(team));
         Assert.assertTrue(searchInPageSource(invoices));
         logger.info("Test passed");
+
     }
 
 
