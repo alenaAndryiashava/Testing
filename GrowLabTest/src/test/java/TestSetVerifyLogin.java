@@ -4,8 +4,17 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
-public class TestGrowLab extends TestBase {
+
+public class TestSetVerifyLogin extends TestBase {
+
+    @BeforeMethod
+    public void runBeforeMethod(Method m, Object[] p){
+        logger.info("Starting method: " + m.getName()+" with data: "+ Arrays.asList(p));
+        //deleteAllRecordings();
+    }
 
     @Test
     public void wrongEmail_emptyPasswordTest(){
@@ -13,15 +22,33 @@ public class TestGrowLab extends TestBase {
         enterEmail("edraexample.com");
         sleepMethod();
         checkErrorMessage();
+        takeScreenshot();
+    }
+
+    @Test(enabled = true)
+    public void BadAuthTest_withRecording() {
+        startRecording();
+        //try to auth with bad creds
+        badAuth("edraexample.com","123");
+
+        //Verify there's an error message displayed
+        String text = "Invalid email or password";
+        Assert.assertEquals(driver.getPageSource().contains(text),Boolean.TRUE);
+        sleepMethod();
+        stopRecoding();
     }
 
     @Test
     public void correctEmail_wrongPasswordTest(){
+        startRecording();
         //try to auth with correct email and wrong password
         enterEmail("edra@example.com");
         enterPassword("123");
         sleepMethod();
         checkErrorMessage();
+        sleepMethod();
+        stopRecoding();
+        logout();
     }
 
     @Test
@@ -37,13 +64,14 @@ public class TestGrowLab extends TestBase {
     public void bad_AuthTest(String email, String password){
         logger.info("Starting method: bad_AuthTest");
         logger.info("try to auth with wrong datasets");
+        sleepMethod();
         enterEmail(email);
         enterPassword(password);
         submitButtonClick();
         sleepMethod();
         logger.info("Test passed");
     }
-    @Test(dataProvider = "getWrongCredsFromCSV")
+    @Test(dataProvider = "wrongDataAuthFromCSV")
     public void bad_AuthTestFromCSV(String email, String password){
         logger.info("Starting method: bad_AuthTest");
         logger.info("try to auth with bad datasets");
@@ -65,6 +93,7 @@ public class TestGrowLab extends TestBase {
         submitButtonClick();
         sleepMethod();
         checkStartPage();
+        takeScreenshot();
     }
 
     @Test
@@ -113,6 +142,10 @@ public class TestGrowLab extends TestBase {
 
         int clientsFound = driver.findElements(By.cssSelector(".js-list-item.position-relative")).size();
         Assert.assertEquals(clientsFound, 2);
+    }
+    @AfterMethod
+    public void afterMLogout(Method m, Object[] p){
+        logger.info("Quiting method: " + m.getName()+" with data: "+ Arrays.asList(p));
     }
 
 

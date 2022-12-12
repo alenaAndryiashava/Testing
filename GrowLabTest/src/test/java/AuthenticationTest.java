@@ -1,22 +1,30 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class AuthenticationTest extends TestBase{
 
-    @BeforeMethod
-    public void beforeMOpenLoginPage(){
-        logger.info("Precondition for each test: user is not logged in, login page is opened in browser");
+    @BeforeMethod(alwaysRun=true)
+    public void beforeMOpenLoginPage(Method m, Object[] p){
+        logger.info("Starting method: " + m.getName()+" with data: "+ Arrays.asList(p));
+
+        //Precondition for each test: user is not logged in, login page is opened in browser
         openLoginPage();
+    }
         //title[@lang=”en”]
         //element[@attribute=“value”]
         //h3[@data-id=“.....”]
-    }
-    @Test
+
+    @Test(priority = 3)
     public void LoginAsManagerTest(){
         logger.info("Starting method: LoginAsManagerTest");
         logger.info("Authenticate as manager");
@@ -39,44 +47,26 @@ public class AuthenticationTest extends TestBase{
         Assert.assertTrue(searchInPageSource("INVOICES"));
         logger.info("Test passed");
     }
-    @Test(dataProvider = "getPartialLinkText")
-    public void LoginAsManagerDataProviderTest(String text){
-        logger.info("Starting method: LoginAsManagerTest");
-        logger.info("Authenticate as manager");
+
+    @Test(priority = 3, enabled=false)
+    public void thisTestShouldFail_LoginAsManager(){
+        logger.info("Running test LoginAsManager");
+        logger.info("Starting method login");
+
+        //Authenticate as a manager
         managerAuth();
-        sleepMethod();
-        driver.findElement(By.partialLinkText(text));
-        sleepMethod();
-        Assert.assertTrue(searchInPageSource(text));
-        logger.info("Test passed");
-    }
-    @Test(dataProvider = "getManagerDataAuthFromCSV")
-    public void LoginAsManagerFromCSVTest(String email,String password,String project, String clients, String team, String invoices){
-        logger.info("Starting method: LoginAsManagerTest");
-        logger.info("Authenticate as manager");
-        auth(email,password);
-        sleepMethod();
-        driver.findElement(By.partialLinkText(project));
-        driver.findElement(By.partialLinkText(clients));
-        driver.findElement(By.partialLinkText(team));
-        driver.findElement(By.partialLinkText(invoices));
-        sleepMethod();
-        Assert.assertTrue(searchInPageSource(project));
-        Assert.assertTrue(searchInPageSource(clients));
-        Assert.assertTrue(searchInPageSource(team));
-        Assert.assertTrue(searchInPageSource(invoices));
-        logger.info("Test passed");
-
+        driver.findElement(By.partialLinkText("ljksand93923s"));
     }
 
 
-    @Test
+    @Test(priority = 3)
     public void LoginAsClientTest(){
         logger.info("Running test LoginAsClient");
         logger.info("Authenticate as client");
         clientAuth();
         sleepMethod();
         logger.info("Verify that links to portal sections are presented on the page available to client");
+        //Verify that links to portal sections are presented on the page available to client
         driver.findElement(By.partialLinkText("PROJECTS OVERVIEW"));
         driver.findElement(By.partialLinkText("INVOICES"));
         //Verify there is no more links from manager/consultant: **first way**
@@ -88,19 +78,12 @@ public class AuthenticationTest extends TestBase{
         Assert.assertTrue(driver.findElements(By.partialLinkText("TEAM")).isEmpty());
 
     }
-    @Test
+    @Test(priority = 3)
     public void LoginAsConsultant() {
         logger.info("Running test LoginAsConsultant");
         logger.info("Authenticate as a consultant");
         consultantAuth();
         sleepMethod();
-
-        /*List<WebElement> navItems = driver.findElements(By.className("nav-item"));
-        List<WebElement> dropDowns = driver.findElements(By.className("dropdown"));
-        navItems.removeAll(dropDowns);
-        Assert.assertEquals(navItems.size(), 4);
-
-         */
         logger.info("Verify that links to portal sections are presented on the page available to consultant");
         driver.findElement(By.partialLinkText("PROJECT OVERVIEW"));
         driver.findElement(By.partialLinkText("CLIENTS"));
@@ -111,6 +94,32 @@ public class AuthenticationTest extends TestBase{
         Assert.assertTrue(searchInPageSource("CLIENTS"));
         Assert.assertTrue(searchInPageSource("TEAM"));
         Assert.assertTrue(searchInPageSource("INVOICES"));
+    }
+
+    @Test(dataProvider = "positiveDataAuthFromCSV", dataProviderClass=DataProviders.class, priority = 1, groups = "smoke")
+    public void goodAuthTestWithDataProviderCSV(String email, String pwd, String elementsTrue, String elementsFalse) throws InterruptedException {
+        auth(email, pwd);
+
+        //Check if splitted by ; strings from elementsTrue are presented on the page as links
+        String[] presented = elementsTrue.split(";");
+        for (String verification : presented) {
+            driver.findElement(By.partialLinkText(verification));
+        }
+
+        //Check if split by ; strings from elementsFalse are not presented on the page as links (excluding space characters from verifications)
+        String[] notpresented = elementsFalse.split(";");
+        for (String verification : notpresented) {
+            if (!Objects.equals(verification, ""))
+            {
+                Assert.assertEquals(driver.findElements(By.partialLinkText(verification)).size(), 0);
+            }
+        }
+    }
+    @Test(dataProvider = "wrongDataAuthFromCSV", dataProviderClass = DataProviders.class, priority = 0, groups = "smoke")
+    public void BadAuthTestWithDataProvider(String email, String pwd) throws InterruptedException {
+        auth(email, pwd);
+        String text = "Invalid email or password";
+        Assert.assertEquals(driver.getPageSource().contains(text),Boolean.TRUE);
     }
 
     @AfterMethod

@@ -1,15 +1,33 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.google.common.io.Files;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.safari.SafariDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.*;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
 
+
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
+import org.monte.screenrecorder.ScreenRecorder;
+import org.monte.media.Format;
+import org.monte.media.FormatKeys;
+import org.monte.media.math.Rational;
+import static org.monte.media.FormatKeys.*;
+import static org.monte.media.VideoFormatKeys.*;
+
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,15 +35,44 @@ import java.util.List;
 public class TestBase extends DataProviders{
     final static Logger logger = LoggerFactory.getLogger(TestBase.class);
     WebDriver driver ;
+    String browser;
+    private ScreenRecorder screen;
+    String recordsFolder= "src/test/resources/records";
 
-    @BeforeTest
-    public void prepare() {
-        driver = new ChromeDriver();
+    @BeforeSuite(alwaysRun=true)
+    public void Prepare(){
+        deleteAllRecordings();
+
+        logger.info("Running a test: prepare in BeforeSuite, initializing WebDriver, maximizing window and opening login page ");
+        String path;
+
+        browser = System.getProperty("browser");
+        logger.info("Running test system property browser set to " + browser);
+
+        if (browser.equals(Browser.CHROME.browserName())) {
+            path = System.getenv("chromeDriver");
+            System.setProperty("webdriver.chrome.driver", path);
+            driver = new ChromeDriver();
+        } else if (browser.equals(Browser.FIREFOX.browserName())) {
+            path = System.getenv("firefoxDriver");
+            System.setProperty("webdriver.gecko.driver", path);
+            driver = new FirefoxDriver();
+        }  else if (browser.equals(Browser.OPERA.browserName())) {
+            path = System.getenv("operaDriver");
+            System.setProperty("webdriver.chrome.driver", path);
+            driver = new ChromeDriver();
+        } else if (browser.equals(Browser.EDGE.browserName())) {
+            path = System.getenv("safariDriver");
+            System.setProperty("webdriver.safari.driver", path);
+            driver = new SafariDriver();
+        }  else {
+            logger.error("No supported browser specified. Supported browsers: chrome, firefox,edge, opera");
+        }
+
         driver.get("https://derrick686.softr.app/login");
         driver.manage().window().maximize();
-        logger.info("Running a test: prepare");
-        logger.info("Precondition for each test: opening login page in browser");
     }
+
     @DataProvider
     public Iterator<Object[]> getWrongLoginData(){
         List<Object[]> list = new ArrayList<>();
@@ -46,7 +93,6 @@ public class TestBase extends DataProviders{
     }
 
     public void enterEmail(String emailEntered){
-        sleepMethod();
         WebElement email = driver.findElement(By.cssSelector("#sw-form-capture-email-input"));
         email.click();
         email.clear();
@@ -55,7 +101,6 @@ public class TestBase extends DataProviders{
 
     }
     public void enterPassword(String passwordEntered){
-        sleepMethod();
         WebElement password = driver.findElement(By.cssSelector("#sw-form-password-input"));
         password.click();
         password.clear();
@@ -130,6 +175,62 @@ public class TestBase extends DataProviders{
             System.out.println("InterruptedException");
         }
     }
+    public String takeScreenshot() {
+        File tmp = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        File screenshot = new File("src/test/resources/screenshots/screen"+System.currentTimeMillis()+".png");
+        try {
+            screenshot.createNewFile();
+            Files.copy(tmp,screenshot);
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            return "Failed to create a screenshot";
+        }
+        return screenshot.getAbsolutePath();
+    }
+    public void startRecording() {
+        File file = new File(recordsFolder);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        Rectangle captureSize = new Rectangle(0,0, dimension.width, dimension.height);
+        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        logger.info("Starting screen recording");
+        try {
+            screen = new Recorder(gc, captureSize,
+                    new Format(MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, MIME_AVI),
+                    new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_AVI_MJPG, CompressorNameKey, ENCODING_AVI_MJPG,
+                            DepthKey, 24, FrameRateKey, Rational.valueOf(15), QualityKey, 1.0f, KeyFrameIntervalKey, 15 * 60),
+                    new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, "black", FrameRateKey, Rational.valueOf(30)),
+                    null, file, "MyVideo");
+            screen.start();
+        } catch (IOException | AWTException e1){
+            logger.error(e1.getMessage());
+        }
+    }
+
+    public void stopRecoding() {
+        logger.info("Stopping screen recording");
+        try {
+            screen.stop();
+        } catch (IOException e1){
+            logger.error(e1.getMessage());
+        }
+    }
+
+    public void deleteAllRecordings(){
+        File dir = new File(recordsFolder);
+        for (File f: dir.listFiles()){
+            try
+            {
+                f.delete();
+            }
+            catch (Exception e)
+            {
+                logger.error("Error while cleaning Records folder " + e.getMessage());
+            }
+        }
+        logger.info("Cleaned Records folder");
+    }
+
+
     public void logout(){
         // log out of the manager account if we are currently
         driver.findElement(By.id("navbarDropdown")).click();
@@ -159,7 +260,6 @@ public class TestBase extends DataProviders{
         input.sendKeys(Keys.ENTER);
         sleepMethod();
     }
-
 
     @AfterTest
     public void exit() {
