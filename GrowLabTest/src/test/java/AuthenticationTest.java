@@ -1,7 +1,6 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -20,9 +19,7 @@ public class AuthenticationTest extends TestBase{
         //Precondition for each test: user is not logged in, login page is opened in browser
         openLoginPage();
     }
-        //title[@lang=”en”]
-        //element[@attribute=“value”]
-        //h3[@data-id=“.....”]
+
 
     @Test(priority = 3)
     public void LoginAsManagerTest(){
@@ -97,18 +94,18 @@ public class AuthenticationTest extends TestBase{
     }
 
     @Test(dataProvider = "positiveDataAuthFromCSV", dataProviderClass=DataProviders.class, priority = 1, groups = "smoke")
-    public void goodAuthTestWithDataProviderCSV(String email, String pwd, String elementsTrue, String elementsFalse) throws InterruptedException {
+    public void goodAuthTestWithDataProviderCSV(String email, String pwd, String elementsTrue, String elementsFalse){
         auth(email, pwd);
 
-        //Check if splitted by ; strings from elementsTrue are presented on the page as links
+        //Check if split by ; strings from elementsTrue are presented on the page as links
         String[] presented = elementsTrue.split(";");
         for (String verification : presented) {
             driver.findElement(By.partialLinkText(verification));
         }
 
         //Check if split by ; strings from elementsFalse are not presented on the page as links (excluding space characters from verifications)
-        String[] notpresented = elementsFalse.split(";");
-        for (String verification : notpresented) {
+        String[] notPresented = elementsFalse.split(";");
+        for (String verification : notPresented) {
             if (!Objects.equals(verification, ""))
             {
                 Assert.assertEquals(driver.findElements(By.partialLinkText(verification)).size(), 0);
@@ -116,7 +113,7 @@ public class AuthenticationTest extends TestBase{
         }
     }
     @Test(dataProvider = "wrongDataAuthFromCSV", dataProviderClass = DataProviders.class, priority = 0, groups = "smoke")
-    public void BadAuthTestWithDataProvider(String email, String pwd) throws InterruptedException {
+    public void BadAuthTestWithDataProvider(String email, String pwd) {
         auth(email, pwd);
         String text = "Invalid email or password";
         Assert.assertEquals(driver.getPageSource().contains(text),Boolean.TRUE);
@@ -128,3 +125,6 @@ public class AuthenticationTest extends TestBase{
         logout();
     }
 }
+//title[@lang=”en”]
+//element[@attribute=“value”]
+//h3[@data-id=“.....”]

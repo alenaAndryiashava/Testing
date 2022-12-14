@@ -28,6 +28,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,26 +73,6 @@ public class TestBase extends DataProviders{
         driver.get("https://derrick686.softr.app/login");
         driver.manage().window().maximize();
     }
-
-    @DataProvider
-    public Iterator<Object[]> getWrongLoginData(){
-        List<Object[]> list = new ArrayList<>();
-        list.add(new Object[]{"email","password"});
-        list.add(new Object[]{"billyeexample.com","123456"});
-        list.add(new Object[]{"","123456"});
-        list.add(new Object[]{"billye@example.com",""});
-        return list.iterator();
-    }
-    @DataProvider
-    public Iterator<Object[]> getPartialLinkText(){
-        List<Object[]> list = new ArrayList<>();
-        list.add(new Object[]{"PROJECT OVERVIEW"});
-        list.add(new Object[]{"CLIENTS"});
-        list.add(new Object[]{"TEAM"});
-        list.add(new Object[]{"INVOICES"});
-        return list.iterator();
-    }
-
     public void enterEmail(String emailEntered){
         WebElement email = driver.findElement(By.cssSelector("#sw-form-capture-email-input"));
         email.click();
@@ -140,7 +121,6 @@ public class TestBase extends DataProviders{
         sleepMethod();
 
     }
-
     public void goodAuth(String email, String password){
         sleepMethod();
         enterEmail(email);
@@ -167,14 +147,7 @@ public class TestBase extends DataProviders{
         Assert.assertEquals(searchInPageSource("Welcome to your Client Portal"),Boolean.TRUE);
     }
 
-    public void sleepMethod(){
-        try {
-            Thread.sleep(2000);
-        }
-        catch (InterruptedException e){
-            System.out.println("InterruptedException");
-        }
-    }
+
     public String takeScreenshot() {
         File tmp = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         File screenshot = new File("src/test/resources/screenshots/screen"+System.currentTimeMillis()+".png");
@@ -259,6 +232,15 @@ public class TestBase extends DataProviders{
         input.sendKeys(stringS);
         input.sendKeys(Keys.ENTER);
         sleepMethod();
+    }
+
+    public void sleepMethod(){
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException e){
+            System.out.println("InterruptedException");
+        }
     }
 
     @AfterTest

@@ -13,6 +13,26 @@ import java.util.List;
 
 
 public class DataProviders {
+
+    @DataProvider
+    public Iterator<Object[]> getWrongLoginData(){
+        List<Object[]> list = new ArrayList<>();
+        list.add(new Object[]{"email","password"});
+        list.add(new Object[]{"billyeexample.com","123456"});
+        list.add(new Object[]{"","123456"});
+        list.add(new Object[]{"billye@example.com",""});
+        return list.iterator();
+    }
+    @DataProvider
+    public Iterator<Object[]> getPartialLinkText(){
+        List<Object[]> list = new ArrayList<>();
+        list.add(new Object[]{"PROJECT OVERVIEW"});
+        list.add(new Object[]{"CLIENTS"});
+        list.add(new Object[]{"TEAM"});
+        list.add(new Object[]{"INVOICES"});
+        return list.iterator();
+    }
+
     @DataProvider
     public static Iterator<Object[]> wrongDataAuthFromCSV() throws IOException {
         List<Object[]> list = new ArrayList<>();
