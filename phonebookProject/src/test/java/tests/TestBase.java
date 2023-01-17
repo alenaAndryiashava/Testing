@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class TestBase {
     WebDriver driver;
+    ContactsPage contactsPage;
 
 
     public static Logger logger = LoggerFactory.getLogger(TestBase.class);
@@ -46,6 +47,15 @@ public abstract class TestBase {
         LoginPage myLoginPage = new LoginPage(driver);
         ContactsPage contactsPage = myLoginPage.login("test@gmail.com", "test@gmail.com");
         sleep();
+    }
+    public Boolean searchInPageSource(String text){
+        return driver.getPageSource().contains(text);
+
+    }
+    public void selectLanguage(String language){
+        //String language = System.getProperty("language");
+        contactsPage = new ContactsPage(driver);
+        contactsPage.selectLanguage(language);
     }
 
 }
