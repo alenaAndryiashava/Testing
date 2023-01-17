@@ -20,6 +20,12 @@ public class ContactsPage extends PageBase{
     @FindBy(xpath = "//select[@id='langSelect']")
     WebElement selectLang;
 
+    @FindBy(xpath = "/html/body/app-root/app-home-page/app-header/nav/div/ul/li[2]/a")
+    WebElement addNewContact;
+
+    @FindBy(xpath = "/html/body/ngb-modal-window/div/div/app-modal-content/div[1]/a")
+    WebElement closeWindow;
+
 //    @FindBy(xpath = "//option[contains(text(),'English')]")
 //    WebElement engLang;
 
@@ -56,6 +62,15 @@ public class ContactsPage extends PageBase{
         click(selectLang);
         WebElement language = driver.findElement(By.xpath("//option[contains(text(),'"+lang+"')]"));
         click(language);
+        return this;
+    }
+    public ContactsPage openAddContactWindow() {
+        click(addNewContact);
+        return this;
+    }
+
+    public ContactsPage closeAddContactWindow() {
+        click(closeWindow);
         return this;
     }
 }

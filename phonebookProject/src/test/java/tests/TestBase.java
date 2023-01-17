@@ -6,11 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import pages.ContactsPage;
+import pages.LoginPage;
 
 import java.util.concurrent.TimeUnit;
 
 public abstract class TestBase {
     WebDriver driver;
+
 
     public static Logger logger = LoggerFactory.getLogger(TestBase.class);
 
@@ -18,7 +21,7 @@ public abstract class TestBase {
     public void init(){
         System.setProperty("webdriver.chrome.driver", "/Users/alenaandryiashava/Testing/Tools/chromedriver108");
         driver = new ChromeDriver();
-        driver.get("http://phonebook.telran-edu.de:8080/user/login");
+        openLoginPage();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
@@ -35,4 +38,14 @@ public abstract class TestBase {
             throw new RuntimeException(e);
         }
     }
+    public void openLoginPage(){
+        driver.get("http://phonebook.telran-edu.de:8080/user/login");
+    }
+
+    public void positiveLogin(){
+        LoginPage myLoginPage = new LoginPage(driver);
+        ContactsPage contactsPage = myLoginPage.login("test@gmail.com", "test@gmail.com");
+        sleep();
+    }
+
 }

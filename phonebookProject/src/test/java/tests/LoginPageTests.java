@@ -1,5 +1,6 @@
 package tests;
 
+import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.ContactsPage;
@@ -20,5 +21,19 @@ public class LoginPageTests extends TestBase{
         sleep();
         Assert.assertEquals(contactsPage.getContacts(language).getText(), ContactsPage.getContactWord(language));
         logger.info("Finished login test");
+    }
+    @Test
+    public void openAndCloseNewContactDialog() {
+        logger.info("Starting open new contact window");
+       ContactsPage contactsPage = new ContactsPage(driver);
+       positiveLogin();
+       contactsPage.openAddContactWindow();
+       sleep();
+        driver.findElement(By.xpath("//*[@id=\"add-contact-modal\"]/h4"));
+        sleep();
+        logger.info("Starting close new contact window");
+        contactsPage.closeAddContactWindow();
+        logger.info("Finished openAndCloseNewContactDialog test");
+
     }
 }
