@@ -45,7 +45,7 @@ public abstract class TestBase {
 
     public void positiveLogin(){
         LoginPage myLoginPage = new LoginPage(driver);
-        ContactsPage contactsPage = myLoginPage.login("test@gmail.com", "test@gmail.com");
+        contactsPage = myLoginPage.login("test@gmail.com", "test@gmail.com");
         sleep();
     }
     public Boolean searchInPageSource(String text){

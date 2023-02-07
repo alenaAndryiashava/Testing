@@ -5,26 +5,39 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
+import java.util.List;
+
 public class ContactsPage extends PageBase{
 
     public ContactsPage(WebDriver driver) {
         super(driver);
     }
 
-    @FindBy(xpath = "/html/body/app-root/app-home-page/app-header/nav/div/div[2]/button[2]")
+    @FindBy(xpath = "//div[@class='collapse navbar-collapse']//div//button[2]")
     WebElement logOutButton;
 
-    @FindBy(xpath = "//a[contains(text(),'Contacts')]")
+    @FindBy(xpath = "//li//a[@href='/']")
     WebElement contacts;
 
     @FindBy(xpath = "//select[@id='langSelect']")
     WebElement selectLang;
 
-    @FindBy(xpath = "/html/body/app-root/app-home-page/app-header/nav/div/ul/li[2]/a")
-    WebElement addNewContact;
+    @FindBy(xpath = "//a[@href='/contacts']")
+    public WebElement addNewContactDialogOpenButton;
 
-    @FindBy(xpath = "/html/body/ngb-modal-window/div/div/app-modal-content/div[1]/a")
-    WebElement closeWindow;
+    @FindBy(xpath = "//*[@id=\"add-contact-modal\"]/a")
+    public WebElement addNewContactDialogCloseButton;
+
+    @FindBy(xpath = "//h4[@class='modal-title']")
+    public List<WebElement> AddContactTextInDialog;
+
+    @FindBy(className = "list-group-item.list-group-item-action")
+    public List<WebElement> contactCards;
+
+    @FindBy(xpath = "//button[@routerlink='/account']")
+    WebElement accountButton;
+
+
 
 //    @FindBy(xpath = "//option[contains(text(),'English')]")
 //    WebElement engLang;
@@ -65,12 +78,55 @@ public class ContactsPage extends PageBase{
         return this;
     }
     public ContactsPage openAddContactWindow() {
-        click(addNewContact);
+        click(addNewContactDialogOpenButton);
         return this;
     }
 
     public ContactsPage closeAddContactWindow() {
-        click(closeWindow);
+        click(addNewContactDialogCloseButton);
         return this;
     }
+    public AccountPage openAccount() {
+        click(accountButton);
+        return new AccountPage(driver);
+    }
+    @FindBy(id = "form-name")
+    WebElement fNameField;
+    @FindBy(id = "form-lastName")
+    WebElement lNameField;
+    @FindBy(id = "form-about")
+    WebElement aboutField;
+    @FindBy(xpath = "//*[@id=\"add-contact-form\"]/div[4]/button[2]")
+    WebElement saveBtn;
+    public ContactsPage fillAddContactsForm(String firstNameKeys, String lastNameKeys, String aboutKeys){
+        type(fNameField, firstNameKeys);
+        type(lNameField, lastNameKeys);
+        type(aboutField, aboutKeys);
+        saveBtn.click();
+        return new ContactsPage(driver);
+
+    }
+
+    public AccountPage clickOnContact(WebElement element) {
+        element.click();
+        return new AccountPage(driver);
+    }
+    //step 3 - new contact added -
+    // Assert.assertEquals(dr.findElement(By.id("contact-first-name")).getText(), "firstNameExample");
+    public void clickToContactMenu() {
+        contacts.click();
+    }
+    @FindBy(xpath = "//input[@id='input-search-contact']")
+    WebElement searchField;
+
+    @FindBy(xpath = "//div[@class='d-flex justify-content-between']")
+    WebElement firstSearchResult;
+    public String getSearchContact(String fullName) {
+        searchField.sendKeys(fullName);
+        return firstSearchResult.getText();
+
+    }
+
 }
+
+
