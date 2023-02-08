@@ -1,8 +1,8 @@
 package tests.login;
 
 import com.github.javafaker.Faker;
-import org.example.pages.LoginPage;
-import org.example.pages.MenuPage;
+import pages.LoginPage;
+import pages.MenuPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseTest;
