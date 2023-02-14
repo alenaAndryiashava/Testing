@@ -20,6 +20,8 @@ public class LoginTest extends BaseTest {
 
     String errorMessage = "Please check your activation or Login + Password combination";
 
+    String errorPasswordMessage = "Password is required.";
+
     @Test
     public void loginTest(){
         loginPage = new LoginPage(driver);
@@ -37,5 +39,14 @@ public class LoginTest extends BaseTest {
         Assert.assertTrue(loginPage.waitElementVisible(loginPage.getErrorMsg()));
         Assert.assertEquals(loginPage.getErrorMsgText(),errorMessage,
                 "The actual text of error message does not matches the the expected text");
+    }
+    @Test
+    public void loginTestWithoutPassword(){
+        loginPage = new LoginPage(driver);
+        loginPage.getAuth(email, "");
+
+        Assert.assertTrue(loginPage.waitElementVisible(loginPage.getPasswordErrorMsg()));
+        Assert.assertEquals(loginPage.getPasswordErrorMessageText(),errorPasswordMessage,
+                "The actual text of error message does not matches the expected text");
     }
 }
