@@ -1,13 +1,9 @@
 package com.telran.otto.pages;
 
-import com.codeborne.selenide.Conditional;
+
 import com.codeborne.selenide.SelenideElement;
 import io.cucumber.java8.En;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.$;
 
 public class BasketPage implements En {

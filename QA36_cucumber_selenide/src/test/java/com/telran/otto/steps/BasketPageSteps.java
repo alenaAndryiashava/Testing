@@ -1,11 +1,8 @@
 package com.telran.otto.steps;
 
-import com.codeborne.selenide.Condition;
 import com.telran.otto.pages.BasketPage;
 import io.cucumber.java8.En;
-import org.openqa.selenium.WebDriver;
 
-import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.page;
