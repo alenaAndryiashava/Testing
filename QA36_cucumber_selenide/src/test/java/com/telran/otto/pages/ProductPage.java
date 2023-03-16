@@ -1,6 +1,4 @@
 package com.telran.otto.pages;
-
-import com.codeborne.selenide.Conditional;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 

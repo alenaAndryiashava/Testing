@@ -1,6 +1,4 @@
 package com.telran.otto.steps;
-
-import com.telran.otto.pages.HeaderMenu;
 import com.telran.otto.pages.LoginPage;
 import io.cucumber.java8.En;
 

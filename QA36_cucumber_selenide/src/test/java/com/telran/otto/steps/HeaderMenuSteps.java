@@ -3,7 +3,6 @@ package com.telran.otto.steps;
 import com.codeborne.selenide.Condition;
 import com.telran.otto.pages.HeaderMenu;
 import io.cucumber.java8.En;
-import org.openqa.selenium.WebDriver;
 
 import static com.codeborne.selenide.Selenide.page;
 

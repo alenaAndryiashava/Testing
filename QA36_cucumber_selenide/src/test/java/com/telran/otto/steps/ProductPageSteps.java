@@ -1,6 +1,5 @@
 package com.telran.otto.steps;
 
-import com.telran.otto.pages.Gallery;
 import com.telran.otto.pages.ProductPage;
 import io.cucumber.java8.En;
 import com.codeborne.selenide.Condition;
