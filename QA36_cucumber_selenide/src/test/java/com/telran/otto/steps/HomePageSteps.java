@@ -10,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 import static com.codeborne.selenide.Selenide.open;
 
 public class HomePageSteps implements En {
@@ -48,7 +49,8 @@ public class HomePageSteps implements En {
             homePage.verifyAuthIcon().shouldBe(Condition.visible);
         });
         And("we close the driver", () -> {
-            driver.close();
+            clearBrowserCookies();
+            driver.quit();
         });
 
     }
