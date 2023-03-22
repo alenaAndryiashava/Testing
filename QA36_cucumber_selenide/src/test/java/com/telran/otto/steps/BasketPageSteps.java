@@ -15,6 +15,7 @@ public class BasketPageSteps implements En {
         Then("we see selected article in a Basket-form", () -> {
             basket = page(BasketPage.class);
             basket.basketFormIsShown().shouldHave(text("Mein Warenkorb"));
+            basket.shouldBeEqualTitle();
 
             basket.selectedItemInBasket().shouldBe(visible);
 

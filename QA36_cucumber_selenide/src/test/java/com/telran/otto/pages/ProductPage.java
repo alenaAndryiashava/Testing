@@ -1,8 +1,11 @@
 package com.telran.otto.pages;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import com.telran.otto.CommonData;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class ProductPage {
 
@@ -30,6 +33,8 @@ public class ProductPage {
         return $(itemInfo);
     }
 
+    SelenideElement productPagePrice = $x("//span[@class=\"pl_headline300\"]");
+
     public void dialogWindowClose() {
         $(dialogClose).click();
 
@@ -37,6 +42,11 @@ public class ProductPage {
 
     public SelenideElement formIsShown() {
         return $(selectedItem);
+    }
+
+    public void shouldBeEqualPrice() {
+        productPagePrice.shouldHave(Condition.text(CommonData.cardPrice));
+        System.out.println("1121241");
     }
 
 }

@@ -13,6 +13,7 @@ public class ProductPageSteps implements En {
         Then("we see selected product in Product page", () -> {
             product = page(ProductPage.class);
             product.formIsShown().shouldBe(Condition.visible);
+            product.shouldBeEqualPrice();
         });
         When("we press addToBasket button", () -> {
             product = page(ProductPage.class);

@@ -1,10 +1,15 @@
 package com.telran.otto.pages;
 
 
+
 import com.codeborne.selenide.SelenideElement;
+import com.telran.otto.CommonData;
 import io.cucumber.java8.En;
 import org.openqa.selenium.By;
+
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class BasketPage implements En {
 
@@ -15,6 +20,8 @@ public class BasketPage implements En {
 
     private static By articleInfo = By
             .cssSelector("[data-qa='info1']");
+
+    SelenideElement productCartTitle = $x("//div[@data-qa=\"articleName\"]//a");
 
 
     private static By deleteIcon = By
@@ -36,5 +43,9 @@ public class BasketPage implements En {
     public void deleteItem() {
         $(deleteIcon).click();
 
+    }
+
+    public void shouldBeEqualTitle() {
+        productCartTitle.shouldHave(text(CommonData.cardTitle));
     }
 }

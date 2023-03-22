@@ -12,6 +12,8 @@ public class GallerySteps implements En {
 
         When("we press image from selected product on a gallery", () -> {
             gallery = page(Gallery.class);
+            gallery.getTitle();
+            gallery.getPrice();
             gallery.goToProductPage();
         });
     }
