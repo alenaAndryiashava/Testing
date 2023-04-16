@@ -4,11 +4,8 @@ import com.github.javafaker.Faker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-
-import java.lang.reflect.Method;
 import java.time.Duration;
 
 public class TestBase {
@@ -19,7 +16,7 @@ public class TestBase {
 
     @BeforeMethod
     public void setUp() {
-        //driver = new ChromeDriver();
+        // driver = new ChromeDriver();
         //driver = new FirefoxDriver();
         //driver = new SafariDriver();
         ChromeOptions options = new ChromeOptions();
