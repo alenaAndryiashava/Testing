@@ -1,67 +1,82 @@
 package tests;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.Card;
+import dto.Card;
+import pages.HomePage;
 import pages.LoginPage;
 
 public class HomeTest extends BaseTest{
-
+@BeforeMethod
+public void login(){
+    new LoginPage()
+            .setLogin("standard_user")
+            .setPassword("secret_sauce")
+            .login();
+}
     @Test
     public void checkCloseError() {
-         new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
+         new HomePage()
                  .checkLogin();
 
     }
 
     @Test
     public void checkFilter() {
-        new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
+        new HomePage()
                 .checkFilter();
 
     }
 
     @Test
     public void checkBasket() {
-        new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
+        new HomePage()
                 .checkBasket();
 
     }
     @Test
     public void checkBasketCounter() {
-        new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
+        new HomePage()
                 .checkBasketCounter();
     }
     @Test
     public void checkCardsSize() {
-        new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
+        new HomePage()
                 .checkProducts(6);
 
     }
-    @Test
+    @Test(testName  = "Наличие названия товара, описания, изображения, цены, кнопки")
     public void checkCardName() {
-        Card card = new Card("Sauce Labs Backpack");
-        new LoginPage()
-                .setLogin("standard_user")
-                .setPassword("secret_sauce")
-                .login()
-                .checkCardName(card);
+        HomePage homePage = new HomePage();
+        Card card = homePage.saveCardData("Sauce Labs Backpack");
+        Card card1 = homePage.saveCardData("Sauce Labs Onesie");
+        Card card2 = homePage.saveCardData("Test.allTheThings() T-Shirt (Red)");
 
-        System.out.println(card);
+        System.out.println("До добавления " + homePage.getBasketCounter());
 
+        card
+                .addToBasket();
+
+        card2
+                .addToBasket();
+
+        card1
+                .addToBasket();
+
+        homePage
+                .checkCardData(card)
+                .checkBasketCounter(3);
+
+        //System.out.println("После добавления " + homePage.getBasketCounter());
+
+    }
+    @Test(testName  = "Проверка данных товара на странице товара")
+    public void checkProductDetails() {
+    HomePage homePage = new HomePage();
+    Card card = homePage.saveCardData("Sauce Labs Fleece Jacket");
+
+    card
+            .openCardPage()
+            .checkCardData(card);
     }
 }
