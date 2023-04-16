@@ -7,7 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import tests.TestBase;
+
 
 import java.time.Duration;
 
@@ -19,10 +19,10 @@ public class ProgressBar {
         PageFactory.initElements(driver, this);
     }
 
-    @FindBy(xpath = "//button[@id=\"startStopButton\"]")
+    @FindBy(xpath = "//button[@id='startStopButton']")
     private WebElement startStopButton;
 
-    @FindBy(xpath = "//div[@role=\"progressbar\"]")
+    @FindBy(xpath = "//div[@role='progressbar']")
     private WebElement progressBar;
 
     private final String ATTRIBUTE_NAME = "aria-valuenow";
@@ -42,14 +42,14 @@ public class ProgressBar {
     }
 
     public void fluentWaitAttribute(String percent) {
-        new FluentWait<WebDriver>(driver)
+        new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(60))
                 .pollingEvery(Duration.ofNanos(2000000))
                 .until(ExpectedConditions.attributeToBe(progressBar, ATTRIBUTE_NAME, percent));
     }
 
     public void clickToStop(String percent) {
-//        explicitWaitForAttribute(percent);
+        //explicitWaitForAttribute(percent);
         fluentWaitAttribute(percent);
         clickToButton();
     }
@@ -57,7 +57,5 @@ public class ProgressBar {
     public String getPercent() {
         return progressBar.getText();
     }
-
-
 }
 

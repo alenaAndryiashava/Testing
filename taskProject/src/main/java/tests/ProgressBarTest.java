@@ -5,7 +5,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.demoqa.ProgressBar;
 
-import java.util.SortedMap;
+
 
 public class ProgressBarTest extends TestBase {
     String url = "https://demoqa.com/progress-bar";
