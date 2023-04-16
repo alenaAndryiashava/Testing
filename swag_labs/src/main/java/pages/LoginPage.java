@@ -14,7 +14,7 @@ public class LoginPage {
     private static final SelenideElement errorContainer = $x("//div[contains(@class,'error-message-container')]");
 
 
-    @Step("Вводим пароль '{login}'")
+    @Step("Вводим логин '{login}'")
     public LoginPage setLogin(String login) {
         loginInput.shouldBe(Condition.visible).sendKeys(login);
         return this;
