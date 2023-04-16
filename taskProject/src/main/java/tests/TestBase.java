@@ -19,16 +19,14 @@ public class TestBase {
 
     @BeforeMethod
     public void setUp() {
-//        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
         //driver = new FirefoxDriver();
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--remote-allow-origins=*");
-//        driver = new ChromeDriver(options);
+        //driver = new SafariDriver();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
 //        driver.get(urlGlobalSqa);
     }
 
@@ -36,6 +34,5 @@ public class TestBase {
     public void tearDown(){
         driver.quit();
     }
-
 
 }
