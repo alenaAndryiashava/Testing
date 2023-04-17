@@ -23,6 +23,12 @@ public class Card {
         this.imgSrc = imgSrc;
         this.button = button;
     }
+    public Card(String name, String description, String price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+
+    }
 
     public String getName() {
         return name;
