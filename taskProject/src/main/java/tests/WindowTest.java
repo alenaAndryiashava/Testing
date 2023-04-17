@@ -14,8 +14,7 @@ public class WindowTest extends TestBase{
     WindowMessageTextPage windowMessageTextPage;
     String originalWindow;
 
-    String messageText = "Knowledge increases by sharing but not by saving. " +
-            "Please share this website with your friends and in your organization.";
+    String messageText = "Knowledge increases by sharing but not by saving. Please share this website with your friends and in your organization.";
 
     @BeforeMethod
     public void openUrl() {
@@ -59,4 +58,5 @@ public class WindowTest extends TestBase{
         Assert.assertTrue(browserWindowsPage.shouldBeVisible());
     }
     //TODO этот тест зависает, нужно разобраться почему
+    // test passed only with Firefox browser!!
 }
