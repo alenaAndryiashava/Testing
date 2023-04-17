@@ -72,11 +72,20 @@ public void login(){
     }
     @Test(testName  = "Проверка данных товара на странице товара")
     public void checkProductDetails() {
-    HomePage homePage = new HomePage();
-    Card card = homePage.saveCardData("Sauce Labs Fleece Jacket");
+        HomePage homePage = new HomePage();
 
-    card
-            .openCardPage()
-            .checkCardData(card);
+        Card card = homePage.saveCardData("Sauce Labs Fleece Jacket");
+
+        card
+                .openCardPage()
+                .checkCardData(card);
+    }
+
+    @Test(testName = "Проверка открытия ссылок из футера")
+    public void checkFooterLinks() {
+        HomePage homePage = new HomePage();
+
+        homePage.checkLink();
+
     }
 }
